@@ -8,4 +8,5 @@ public interface ITaskRepository : IRepository
     Task<IReadOnlyList<TaskItem>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
     Task AddAsync(TaskItem task, CancellationToken cancellationToken = default);
     Task UpdateAsync(TaskItem task, CancellationToken cancellationToken = default);
+    Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }

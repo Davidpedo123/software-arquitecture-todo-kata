@@ -46,6 +46,17 @@ public class JsonFileTaskRepository : ITaskRepository
         }
     }
 
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var tasks = await LoadAsync(cancellationToken);
+        var initialCount = tasks.Count;
+        tasks.RemoveAll(t => t.Id == id);
+        if (tasks.Count < initialCount)
+        {
+            await SaveAsync(tasks, cancellationToken);
+        }
+    }
+
     private async Task<List<TaskItem>> LoadAsync(CancellationToken cancellationToken)
     {
         if (!File.Exists(_filePath))

@@ -24,18 +24,21 @@ var loginQuery = new LoginQuery(userRepo);
 var createTaskCommand = new CreateTaskCommand(taskRepo);
 var listTasksQuery = new ListTasksQuery(taskRepo);
 var editTaskCommand = new EditTaskCommand(taskRepo);
+var deleteTaskCommand = new DeleteTaskCommand(taskRepo);
 
 var createAccountUseCase = new CreateAccountUseCase(createAccountCommand);
 var loginUseCase = new LoginUseCase(loginQuery);
 var createTaskUseCase = new CreateTaskUseCase(createTaskCommand);
 var listTasksUseCase = new ListTasksUseCase(listTasksQuery);
 var editTaskUseCase = new EditTaskUseCase(editTaskCommand);
+var deleteTaskUseCase = new DeleteTaskUseCase(deleteTaskCommand);
 
 var app = new TodoConsoleApp(
     createAccountUseCase,
     loginUseCase,
     createTaskUseCase,
     listTasksUseCase,
-    editTaskUseCase);
+    editTaskUseCase,
+    deleteTaskUseCase);
 
 return await app.RunAsync();
