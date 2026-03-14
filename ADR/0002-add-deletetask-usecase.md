@@ -1,6 +1,6 @@
-# 2. Agregar el Caso de Uso DeleteTask
+# 2. Agregar la opción de Eliminar Tarea
 
-Fecha: 2024-03-12
+Fecha: 2026-03-12
 
 ## Estado
 
@@ -8,14 +8,14 @@ Aceptado
 
 ## Contexto
 
-Estamos extendiendo la Aplicación de Consola existente para soportar la eliminación de una tarea (nota). La arquitectura actual aplica un enfoque CQRS utilizando Casos de Uso (UseCases) para la orquestación y Comandos/Consultas (Commands/Queries) para la lógica real y el acceso a datos. Necesitamos decidir cómo integrar la funcionalidad de eliminación.
+La app de tareas ya permite crear y editar notas, pero no tiene forma de borrarlas. Se necesita agregar esa funcionalidad como parte de un requerimiento académico.
 
 ## Decisión
 
-Decidimos crear un `DeleteTaskCommand` segregado y un `DeleteTaskUseCase` dedicado para manejar la lógica de eliminación, en lugar de adaptar o reutilizar comandos existentes (como `EditTaskCommand`). El Caso de Uso orquesta la acción mientras que el Comando aplica las reglas de negocio (como validar que la tarea pertenece al usuario que solicita la eliminación).
+Seguimos la misma estructura que ya teníamos para crear y editar tareas. Básicamente creamos las mismas piezas (modelo, caso de uso, comando, interfaz) pero orientadas a eliminar.
 
 ## Consecuencias
 
-* **Positivo:** Asegura el Principio de Responsabilidad Única (SRP) al mantener cada comando estrictamente enfocado en una sola mutación.
-* **Positivo:** Sigue los patrones arquitectónicos existentes en el código base, facilitando a futuros desarrolladores la navegación y extensión.
-* **Negativo:** Aumenta el número de archivos y código repetitivo (Modelos, Caso de Uso, Comando, Interfaces) simplemente para realizar una eliminación.
+* **Positivo:** Como seguimos el mismo patrón, es fácil de entender para cualquiera que ya conozca el proyecto.
+
+* **Negativo:** Se crean varios archivos nuevos solo para una operación de borrado, lo que puede sentirse repetitivo.

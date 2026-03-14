@@ -1,6 +1,6 @@
-# 3. Implementar Borrado Físico (Hard Delete) en el Repositorio JSON
+# 3. Usar borrado físico en el repositorio JSON
 
-Fecha: 2024-03-12
+Fecha: 2026-03-12
 
 ## Estado
 
@@ -8,15 +8,15 @@ Aceptado
 
 ## Contexto
 
-Al implementar la funcionalidad `DeleteTask`, necesitamos un mecanismo para eliminar las tareas de la persistencia. La aplicación actualmente utiliza un archivo JSON simple por modelo para su almacenamiento de datos. Necesitamos decidir si implementar un "borrado lógico" (soft delete, agregando una bandera `IsDeleted`) o un "borrado físico" (hard delete, eliminándolo del arreglo JSON).
+Al agregar la función de eliminar tareas, teníamos que decidir cómo manejar el borrado en el archivo JSON donde se guardan los datos. Las dos opciones eran: marcar la tarea como eliminada sin borrarla realmente (soft delete), o eliminarla por completo del archivo (hard delete).
 
 ## Decisión
 
-Implementaremos un Borrado Físico (Hard Delete) desde el `JsonFileTaskRepository`. Esto implicará cargar la lista JSON en la memoria, remover el elemento por completo y reescribir el arreglo en el disco.
+Decidimos hacer un borrado físico: se carga la lista de tareas del JSON, se quita la tarea y se vuelve a guardar el archivo. Así de simple.
 
 ## Consecuencias
 
-* **Positivo:** Simplicidad. Concuerda con la naturaleza simplista y orientada a la kata de la estructura de persistencia JSON actual. Los archivos de datos no se inflarán con el tiempo.
-* **Positivo:** Evita cambios en cascada en todas las Consultas existentes (ej. `ListTasksQuery`) para filtrar las tareas con `IsDeleted == true`.
-* **Negativo:** Las eliminaciones son definitivas. Si un usuario elimina accidentalmente una tarea, no se puede recuperar.
-* **Negativo:** No es ideal para un entorno de producción donde generalmente se requiere auditoría o retención de historial, pero es aceptable para esta kata.
+* **Positivo:** Es la opción más sencilla y encaja bien con el enfoque simple del proyecto. Además el archivo no se llena de tareas "borradas" que en realidad siguen ahí.
+* **Positivo:** No hay que modificar las consultas existentes (como listar tareas) para que filtren las eliminadas.
+* **Negativo:** Si borras algo por error, no hay forma de recuperarlo.
+* **Negativo:** En un sistema real probablemente se necesitaría guardar historial, pero para este ejercicio académico está bien así.

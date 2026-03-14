@@ -1,6 +1,6 @@
-# Propuesta: Uso de MediatR para Eliminar Boilerplate de Casos de Uso
+# Propuesta: Usar MediatR para reducir código repetitivo
 
-Fecha: 2024-03-12
+Fecha: 2026-03-12
 
 ## Estado
 
@@ -8,18 +8,17 @@ Propuesto
 
 ## Contexto
 
-Actualmente, cada operación en el sistema (como Crear Tarea, Eliminar Tarea) requiere de la creación de múltiples clases: Un Request (e.g. `CreateTaskRequest`), un Result (`CreateTaskResult`), un Command o Query (`CreateTaskCommand`), un Interfaz `ICommand` o `IQuery` correspondiente, y finalmente un Caso de Uso (`CreateTaskUseCase`) que implementa la interfaz `IUseCase` y, en la mayoría de los casos, sólo actúa como un mero pasamanos (pass-through) inyectando y ejecutando el comando subyacente.
+Cada vez que agregamos una operación nueva (crear tarea, eliminar tarea, etc.) hay que crear un montón de clases: el Request, el Result, el Command, la interfaz y el UseCase. El problema es que el UseCase casi siempre solo recibe el pedido y se lo pasa al Command sin hacer nada más. Es mucho código para algo tan simple.
 
-Esto genera una gran cantidad de código repetitivo (redundancia gorda) que no aporta valor de negocio, inflando el constructor de la aplicación (`TodoConsoleApp.cs`) ya que se deben inyectar o registrar docenas de de interfaces.
+Además, el constructor de la clase principal de la app se va llenando de dependencias con cada operación nueva.
 
 ## Decisión Propuesta
 
-Se propone introducir la librería **MediatR**.
-En lugar de crear Casos de Uso que envuelven Comandos, los "Commands" se convertirían en `IRequest<TResponse>` y sus implementaciones serían los `IRequestHandler<TRequest, TResponse>`.
+Usar la librería **MediatR**. En vez de tener UseCases que solo pasan datos al Command, los Commands se convierten directamente en Requests de MediatR y sus implementaciones son los Handlers. La app solo necesita recibir un `IMediator` en vez de una dependencia por cada operación.
 
 ## Consecuencias
 
-* **Positivo:** Elimina completamente la necesidad de clases envoltorio "UseCase" inútiles.
-* **Positivo:** Todo el enrutamiento a los *Handlers* se hace de manera dinámica en tiempo de ejecución. El constructor de `TodoConsoleApp` pasaría de recibir 5+ dependencias `IUseCase<...>` a tener únicamente que recibir una dependencia: `IMediator mediator`.
-* **Positivo:** Se reduce drásticamente el "ruido" en el código, permitiendo a los desarrolladores enfocarse en la lógica real.
-* **Negativo:** MediatR añade cierta "magia" o acoplamiento implícito, lo que hace ligeramente más difícil navegar el código haciendo "Click To Defintion" o "Find all References", ya que el emisor de un `IRequest` no llama explícitamente al `IRequestHandler`.
+* **Positivo:** Se eliminan las clases UseCase que no aportaban nada.
+* **Positivo:** El constructor de la app pasa de tener 5+ dependencias a tener solo una.
+* **Positivo:** Hay menos ruido en el código y es más fácil enfocarse en lo importante.
+* **Negativo:** MediatR esconde un poco cómo se conectan las piezas, así que es más difícil rastrear quién maneja cada operación con "ir a definición".
